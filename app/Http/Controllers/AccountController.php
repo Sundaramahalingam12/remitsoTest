@@ -36,12 +36,10 @@ private function generateLuhnAccountNumber($length = 12)
 {
     $number = '';
 
-    // Generate a random base number (excluding the check digit)
     for ($i = 0; $i < $length - 1; $i++) {
         $number .= mt_rand(0, 9);
     }
 
-    // Append the Luhn check digit
     return $number . $this->calculateLuhnCheckDigit($number);
 }
 
@@ -71,6 +69,15 @@ private function generateLuhnAccountNumber($length = 12)
         }
 
         return (10 - ($sum % 10)) % 10;
+    }
+
+    public function show($account_number)
+    {
+        $account = Account::where('account_number', $account_number)
+                          ->where('user_id', auth()->id())
+                          ->firstOrFail();
+    
+        return response()->json($account, 200);
     }
     
     public function update(Request $request, $account_number)
